@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="ir_cron_update_visa_days_remaining" model="ir.cron">
+        <field name="name">Update Visa Days Remaining</field>
+        <field name="model_id" ref="model_x_visa_process"/>
+        <field name="state">code</field>
+        <field name="code">model.action_recompute_days_remaining()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>
