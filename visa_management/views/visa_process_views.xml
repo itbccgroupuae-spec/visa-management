@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_x_visa_process_list" model="ir.ui.view">
+        <field name="name">visa.process.list</field>
+        <field name="model">x_visa_process</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="x_id_number"/>
+                <field name="x_application_typed_date"/>
+                <field name="x_candidate_name"/>
+                <field name="x_passport_number"/>
+                <field name="x_nationality"/>
+                <field name="x_responsible_pro"/>
+                <field name="x_stage"/>
+                <field name="x_expiry_date"/>
+                <field name="x_days_remaining"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_x_visa_process_form" model="ir.ui.view">
+        <field name="name">visa.process.form</field>
+        <field name="model">x_visa_process</field>
+        <field name="arch" type="xml">
+            <form string="Visa File">
+                <sheet>
+                    <group string="Candidate Details">
+                        <field name="x_id_number"/>
+                        <field name="x_application_typed_date"/>
+                        <field name="x_candidate_name"/>
+                        <field name="x_passport_number"/>
+                        <field name="x_nationality"/>
+                        <field name="x_responsible_pro"/>
+                    </group>
+                    <group string="Visa Tracking">
+                        <field name="x_stage"/>
+                        <field name="x_expiry_date"/>
+                        <field name="x_days_remaining" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_x_visa_process_kanban" model="ir.ui.view">
+        <field name="name">visa.process.kanban</field>
+        <field name="model">x_visa_process</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="x_stage">
+                <field name="x_id_number"/>
+                <field name="x_application_typed_date"/>
+                <field name="x_candidate_name"/>
+                <field name="x_passport_number"/>
+                <field name="x_nationality"/>
+                <field name="x_responsible_pro"/>
+                <field name="x_stage"/>
+                <field name="x_expiry_date"/>
+                <field name="x_days_remaining"/>
+
+                <templates>
+                    <t t-name="card">
+                        <div t-att-class="'oe_kanban_card ' + (record.x_days_remaining.raw_value &lt; 30 ? 'bg-danger text-white' : (record.x_days_remaining.raw_value &lt;= 60 ? 'bg-warning' : ''))">
+                            <div><strong>ID:</strong> <field name="x_id_number"/></div>
+                            <div><strong>Typed Date:</strong> <field name="x_application_typed_date"/></div>
+                            <div><strong>Candidate:</strong> <field name="x_candidate_name"/></div>
+                            <div><strong>Passport:</strong> <field name="x_passport_number"/></div>
+                            <div><strong>Nationality:</strong> <field name="x_nationality"/></div>
+                            <div><strong>PRO:</strong> <field name="x_responsible_pro"/></div>
+                            <div><strong>Stage:</strong> <field name="x_stage"/></div>
+                            <div><strong>Expiry:</strong> <field name="x_expiry_date"/></div>
+                            <div><strong>Days Left:</strong> <field name="x_days_remaining"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_x_visa_process_graph" model="ir.ui.view">
+        <field name="name">visa.process.graph</field>
+        <field name="model">x_visa_process</field>
+        <field name="arch" type="xml">
+            <graph string="Visa Dashboard" type="bar">
+                <field name="x_stage" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_x_visa_process_pivot" model="ir.ui.view">
+        <field name="name">visa.process.pivot</field>
+        <field name="model">x_visa_process</field>
+        <field name="arch" type="xml">
+            <pivot string="Visa Analysis">
+                <field name="x_stage" type="row"/>
+                <field name="x_nationality" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_x_visa_process" model="ir.actions.act_window">
+        <field name="name">Visa Files</field>
+        <field name="res_model">x_visa_process</field>
+        <field name="view_mode">kanban,list,form,graph,pivot</field>
+        <field name="context">{'group_by': 'x_stage'}</field>
+        <field name="views" eval="[
+            (ref('view_x_visa_process_kanban'), 'kanban'),
+            (ref('view_x_visa_process_list'), 'list'),
+            (ref('view_x_visa_process_form'), 'form'),
+            (ref('view_x_visa_process_graph'), 'graph'),
+            (ref('view_x_visa_process_pivot'), 'pivot')
+        ]"/>
+    </record>
+
+    <menuitem id="menu_visa_management_root"
+              name="Visa Management"
+              sequence="10"/>
+
+    <menuitem id="menu_visa_files"
+              name="Visa Files"
+              parent="menu_visa_management_root"
+              action="action_x_visa_process"
+              sequence="10"/>
+</odoo>
